@@ -459,7 +459,7 @@ export const apiStats: ApiStat[] = [
 ];
 
 export const premiumRequestsConfig: PremiumRequestsConfig = {
-  totalMonthlyBudget: 100,
+  totalMonthlyBudget: 150,
   usedAmount: 20,
   limitPercent: 100,
   billingCycleReset: "Mar 31",
