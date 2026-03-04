@@ -1,7 +1,16 @@
 import { SectionHeader } from "@/components/SectionHeader";
-import { apiStats } from "@/data/missionData";
+import { apiStats, premiumRequestsConfig } from "@/data/missionData";
 
 export default function ApiUsagePage() {
+  const { totalMonthlyBudget, usedAmount, limitPercent } = premiumRequestsConfig;
+
+  // Dollar value at which the hard cap is enforced
+  const capThreshold = (totalMonthlyBudget * limitPercent) / 100;
+  // Actual usage as a percentage of the cap (can exceed 100 when over cap)
+  const rawUsageOfLimit = Math.round((usedAmount / capThreshold) * 100);
+  const displayBarWidth = Math.min(rawUsageOfLimit, 100);
+  const isAtCap = rawUsageOfLimit >= 100;
+
   return (
     <div className="space-y-8">
       <SectionHeader
@@ -18,6 +27,57 @@ export default function ApiUsagePage() {
           </div>
         ))}
       </div>
+
+      {/* Premium paid requests section */}
+      <div className="glass-card p-6 space-y-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-white/50">Manage premium paid requests</p>
+            <p className="mt-1 text-2xl font-semibold text-white">
+              ${usedAmount.toFixed(2)}{" "}
+              <span className="text-sm font-normal text-white/60">
+                of ${capThreshold.toFixed(2)} limit
+              </span>
+            </p>
+            <p className="text-sm text-white/60">
+              Hard cap: {limitPercent}% of ${totalMonthlyBudget} monthly budget
+            </p>
+          </div>
+          <span
+            className={`mt-1 rounded-full px-3 py-1 text-xs font-semibold ${
+              isAtCap
+                ? "bg-rose-500/20 text-rose-200"
+                : "bg-emerald-500/20 text-emerald-200"
+            }`}
+          >
+            {isAtCap ? "At cap — requests blocked" : "Within limit"}
+          </span>
+        </div>
+
+        {/* Usage bar */}
+        <div>
+          <div className="mb-1 flex justify-between text-xs text-white/50">
+            <span>0%</span>
+            <span className={`font-semibold ${isAtCap ? "text-rose-300" : "text-white"}`}>
+              {rawUsageOfLimit}% of limit{isAtCap && rawUsageOfLimit > 100 ? " (over cap)" : ""}
+            </span>
+            <span>100% of cap</span>
+          </div>
+          <div className="h-3 w-full overflow-hidden rounded-full bg-white/10">
+            <div
+              className={`h-full rounded-full transition-all ${
+                isAtCap ? "bg-rose-500" : "bg-emerald-500"
+              }`}
+              style={{ width: `${displayBarWidth}%` }}
+            />
+          </div>
+          <p className="mt-2 text-xs text-white/50">
+            Limit is active at {limitPercent}%. Once ${capThreshold.toFixed(2)} is reached, new paid
+            requests are blocked until the limit is raised or the billing cycle resets.
+          </p>
+        </div>
+      </div>
+
       <div className="glass-card p-6">
         <p className="text-sm text-white/70">
           To reduce burn: batch updates, avoid duplicate tunnels, and move Mission Control to a hosted target.
@@ -33,7 +93,7 @@ export default function ApiUsagePage() {
           </div>
           <div className="rounded-2xl border border-white/10 p-3">
             <p className="font-semibold text-white">Alert</p>
-            <p>Set budget reminder at 100k tokens/day</p>
+            <p>Budget cap active at {limitPercent}% — ${capThreshold.toFixed(2)}/month</p>
           </div>
         </div>
       </div>
