@@ -2,7 +2,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { apiStats, premiumRequestsConfig } from "@/data/missionData";
 
 export default function ApiUsagePage() {
-  const { totalMonthlyBudget, usedAmount, limitPercent } = premiumRequestsConfig;
+  const { totalMonthlyBudget, usedAmount, limitPercent, billingCycleReset } = premiumRequestsConfig;
 
   // Dollar value at which the hard cap is enforced
   const capThreshold = (totalMonthlyBudget * limitPercent) / 100;
@@ -76,6 +76,49 @@ export default function ApiUsagePage() {
             requests are blocked until the limit is raised or the billing cycle resets.
           </p>
         </div>
+
+        {/* Resolution guide — shown only when at cap */}
+        {isAtCap && (
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 space-y-3">
+            <p className="text-sm font-semibold text-amber-200">
+              ⚠ Action required — requests are currently blocked
+            </p>
+            <p className="text-xs text-white/70">
+              Your cap is set to {limitPercent}% of your ${totalMonthlyBudget} monthly budget ($
+              {capThreshold.toFixed(2)}). Usage has reached this limit, so new paid requests are
+              being rejected and you are not being charged for them.
+            </p>
+            <div className="space-y-1 text-xs text-white/70">
+              <p className="font-semibold text-white">To allow charges and unblock requests:</p>
+              <ol className="list-decimal list-inside space-y-1 pl-1">
+                <li>
+                  Raise your limit above {limitPercent}% — for example, set it to{" "}
+                  <span className="text-white font-medium">
+                    50% (${(totalMonthlyBudget * 0.5).toFixed(2)})
+                  </span>{" "}
+                  or{" "}
+                  <span className="text-white font-medium">
+                    100% (${totalMonthlyBudget.toFixed(2)})
+                  </span>
+                  .
+                </li>
+                <li>
+                  Update <code className="rounded bg-white/10 px-1">limitPercent</code> in{" "}
+                  <code className="rounded bg-white/10 px-1">data/missionData.ts</code> to the
+                  new value.
+                </li>
+                <li>
+                  Premium requests will then be charged and processed normally up to the new cap.
+                </li>
+              </ol>
+            </div>
+            <p className="text-xs text-white/50">
+              Alternatively, wait for your billing cycle to reset on{" "}
+              <span className="text-white/70 font-medium">{billingCycleReset}</span> — your usage
+              counter will clear and requests will resume at the current {limitPercent}% cap.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="glass-card p-6">

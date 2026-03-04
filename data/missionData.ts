@@ -362,6 +362,8 @@ export type PremiumRequestsConfig = {
   usedAmount: number;
   /** Hard-cap as a percentage of totalMonthlyBudget (0-100) */
   limitPercent: number;
+  /** Date when the monthly billing cycle resets (e.g. "Mar 31") */
+  billingCycleReset: string;
 };
 
 export type WorkflowPlay = {
@@ -460,6 +462,7 @@ export const premiumRequestsConfig: PremiumRequestsConfig = {
   totalMonthlyBudget: 100,
   usedAmount: 20,
   limitPercent: 20,
+  billingCycleReset: "Mar 31",
 };
 
 export const workflowPlays: WorkflowPlay[] = [
