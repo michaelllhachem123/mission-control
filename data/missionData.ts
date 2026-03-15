@@ -355,6 +355,17 @@ export type ApiStat = {
   delta: string;
 };
 
+export type PremiumRequestsConfig = {
+  /** Monthly paid-request budget in USD */
+  totalMonthlyBudget: number;
+  /** Amount already consumed this month in USD */
+  usedAmount: number;
+  /** Hard-cap as a percentage of totalMonthlyBudget (0-100) */
+  limitPercent: number;
+  /** Date when the monthly billing cycle resets (e.g. "Mar 31") */
+  billingCycleReset: string;
+};
+
 export type WorkflowPlay = {
   title: string;
   description: string;
@@ -446,6 +457,13 @@ export const apiStats: ApiStat[] = [
   { label: "Tokens burned", value: "138k", delta: "+32%" },
   { label: "Latency", value: "1.8s", delta: "-0.4s" },
 ];
+
+export const premiumRequestsConfig: PremiumRequestsConfig = {
+  totalMonthlyBudget: 150,
+  usedAmount: 20,
+  limitPercent: 100,
+  billingCycleReset: "Mar 31",
+};
 
 export const workflowPlays: WorkflowPlay[] = [
   {
