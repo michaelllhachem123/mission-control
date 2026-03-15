@@ -366,19 +366,6 @@ export type PremiumRequestsConfig = {
   billingCycleReset: string;
 };
 
-export type CopilotPlanConfig = {
-  /** Plan tier name, e.g. "Copilot Pro" */
-  plan: string;
-  /** Whether the subscription is currently active */
-  active: boolean;
-  /** Renewal / next billing date */
-  renewsOn: string;
-  /** Key features included in this plan */
-  features: string[];
-  /** Monthly included premium model requests (0 = unlimited or not applicable) */
-  includedPremiumRequests: number;
-};
-
 export type WorkflowPlay = {
   title: string;
   description: string;
@@ -476,20 +463,6 @@ export const premiumRequestsConfig: PremiumRequestsConfig = {
   usedAmount: 20,
   limitPercent: 100,
   billingCycleReset: "Mar 31",
-};
-
-export const copilotPlan: CopilotPlanConfig = {
-  plan: "GitHub Copilot Pro",
-  active: true,
-  renewsOn: "Apr 4",
-  features: [
-    "Unlimited code completions",
-    "Chat in IDE + GitHub.com",
-    "Premium model access (GPT-4o, Claude Sonnet, Gemini 1.5 Pro)",
-    "Multi-file editing & next-edit suggestions",
-    "CLI + mobile Copilot Chat",
-  ],
-  includedPremiumRequests: 300,
 };
 
 export const workflowPlays: WorkflowPlay[] = [
