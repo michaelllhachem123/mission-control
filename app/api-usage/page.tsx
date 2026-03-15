@@ -1,8 +1,9 @@
 import { SectionHeader } from "@/components/SectionHeader";
-import { apiStats, premiumRequestsConfig } from "@/data/missionData";
+import { apiStats, copilotPlan, premiumRequestsConfig } from "@/data/missionData";
 
 export default function ApiUsagePage() {
   const { totalMonthlyBudget, usedAmount, limitPercent, billingCycleReset } = premiumRequestsConfig;
+  const { plan, active, renewsOn, features, includedPremiumRequests } = copilotPlan;
 
   // Dollar value at which the hard cap is enforced
   const capThreshold = (totalMonthlyBudget * limitPercent) / 100;
@@ -18,6 +19,40 @@ export default function ApiUsagePage() {
         title="Token + request burn"
         description="Snapshot of OpenClaw calls so we can keep consumption in check."
       />
+
+      {/* Copilot plan status card */}
+      <div className="glass-card p-6 space-y-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-white/50">Copilot subscription</p>
+            <p className="mt-1 text-2xl font-semibold text-white">{plan}</p>
+            <p className="text-sm text-white/60">Renews on {renewsOn}</p>
+          </div>
+          <span
+            className={`mt-1 rounded-full px-3 py-1 text-xs font-semibold ${
+              active
+                ? "bg-emerald-500/20 text-emerald-200"
+                : "bg-rose-500/20 text-rose-200"
+            }`}
+          >
+            {active ? "✓ Active" : "Inactive"}
+          </span>
+        </div>
+        <div className="grid gap-2 sm:grid-cols-2 text-xs text-white/70">
+          {features.map((f) => (
+            <div key={f} className="flex items-start gap-2">
+              <span className="mt-0.5 text-emerald-400">✓</span>
+              <span>{f}</span>
+            </div>
+          ))}
+        </div>
+        {includedPremiumRequests > 0 && (
+          <p className="text-xs text-white/50">
+            Includes <span className="font-semibold text-white/80">{includedPremiumRequests} premium model requests</span> per
+            month at no extra charge. Additional requests draw from your paid budget below.
+          </p>
+        )}
+      </div>
       <div className="grid gap-4 md:grid-cols-3">
         {apiStats.map((stat) => (
           <div key={stat.label} className="glass-card p-5">
